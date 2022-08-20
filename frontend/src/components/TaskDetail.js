@@ -1,4 +1,5 @@
 import moment from "moment";
+import { TaskConstants } from "../constants/TaskConstants";
 import { useTasksContext } from "../hooks/useTasksContext";
 function TaskDetail({ task }) {
     const { dispatch } = useTasksContext();
@@ -11,7 +12,7 @@ function TaskDetail({ task }) {
 
         if (respone.ok) {
             console.log("task deleted");
-            dispatch({ type: "DELETE_TASK", payload: json });
+            dispatch({ type: TaskConstants.DELETE_TASK, payload: json });
         }
     };
     const handle_update = async () => {
@@ -23,7 +24,7 @@ function TaskDetail({ task }) {
 
         if (respone.ok) {
             console.log("task updated");
-            dispatch({ type: "UPDATE_TASK", payload: json });
+            dispatch({ type: TaskConstants.UPDATE_TASK, payload: json });
         }
     };
     return (

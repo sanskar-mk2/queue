@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import TaskDetail from "../components/TaskDetail";
 import TaskForm from "../components/TaskForm";
+import { TaskConstants } from "../constants/TaskConstants";
 import { useTasksContext } from "../hooks/useTasksContext";
 
 function Home() {
@@ -12,7 +13,7 @@ function Home() {
             const json = await respone.json();
             if (respone.ok) {
                 dispatch({
-                    type: "SET_TASKS",
+                    type: TaskConstants.SET_TASKS,
                     payload: json.tasks.filter((e) => !e.deleted_at),
                 });
             }

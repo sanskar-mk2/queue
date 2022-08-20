@@ -1,4 +1,5 @@
 import { createContext, useReducer } from "react";
+import { TaskConstants } from "../constants/TaskConstants";
 import moment from "moment";
 
 export const TasksContext = createContext();
@@ -17,22 +18,22 @@ const local_copy_manager = (tasks) => {
 
 export const tasks_reducer = (state, action) => {
     switch (action.type) {
-        case "SET_TASKS":
+        case TaskConstants.SET_TASKS:
             return local_copy_manager([...action.payload]);
-        case "CREATE_TASK":
+        case TaskConstants.CREATE_TASK:
             return local_copy_manager([...state.tasks, action.payload]);
-        case "DELETE_TASK":
+        case TaskConstants.DELETE_TASK:
             return local_copy_manager(
                 state.tasks.filter((e) => e._id !== action.payload._id)
             );
-        case "UPDATE_TASK":
+        case TaskConstants.UPDATE_TASK:
             return local_copy_manager(
                 state.tasks.map((e) =>
                     e._id === action.payload._id ? action.payload : e
                 )
             );
         default:
-            return state;
+            throw new Error(`Unhandled type ${action.type} in tasks_reducer`);
     }
 };
 
