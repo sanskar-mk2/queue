@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/tasks", task_routes);
-app.use("/api/user", user_routes);
+app.use("/api/users", user_routes);
 
 mongoose
     .connect(process.env.MONGO_URI)
