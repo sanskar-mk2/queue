@@ -8,8 +8,11 @@ const {
     update,
     destroy,
 } = require("../controllers/TaskController");
+const RequireAuth = require("../middleware/RequireAuth");
 
 const router = express.Router();
+
+router.use(RequireAuth);
 
 router.get("/", index);
 router.post("/", store);

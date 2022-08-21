@@ -1,13 +1,21 @@
 import { useState } from "react";
 import { TaskConstants } from "../constants/TaskConstants";
+import { useAuthContext } from "../hooks/useAuthContext";
 import { useTasksContext } from "../hooks/useTasksContext";
+
 function TaskForm() {
     const { dispatch } = useTasksContext();
     const [title, set_title] = useState("");
     const [error, set_error] = useState(null);
+    const { user } = useAuthContext();
 
     const handle_submit = async (e) => {
         e.preventDefault();
+
+        if (!user) {
+            set_error("You must be logged in");
+            return;
+        }
 
         const task = { title };
 
@@ -16,6 +24,7 @@ function TaskForm() {
             body: JSON.stringify(task),
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${user.token}`,
             },
         });
 

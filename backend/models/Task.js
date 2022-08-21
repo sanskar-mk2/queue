@@ -12,6 +12,10 @@ const task_schema = new Schema(
             type: Date,
             default: null,
         },
+        user_id: {
+            type: String,
+            required: true,
+        },
     },
     {
         timestamps: {
@@ -22,4 +26,3 @@ const task_schema = new Schema(
 );
 
 module.exports = mongoose.model("Task", task_schema);
-

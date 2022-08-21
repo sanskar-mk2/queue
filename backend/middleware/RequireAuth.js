@@ -13,9 +13,14 @@ const RequireAuth = async (req, res, next) => {
     try {
         const { _id } = jwt.verify(token, process.env.SECRET);
         req.user = await User.findOne({ _id }).select("_id");
+        if (!req.user) {
+            return res.status(401).json({ error: "Request is not authorized" });
+        }
         next();
     } catch (error) {
         console.log(error);
-        res.status(401).json({ error: "Request is not authorized" });
+        return res.status(401).json({ error: "Request is not authorized" });
     }
 };
+
+module.exports = RequireAuth;

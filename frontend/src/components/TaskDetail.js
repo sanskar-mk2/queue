@@ -1,11 +1,20 @@
 import moment from "moment";
 import { TaskConstants } from "../constants/TaskConstants";
+import { useAuthContext } from "../hooks/useAuthContext";
 import { useTasksContext } from "../hooks/useTasksContext";
 function TaskDetail({ task }) {
     const { dispatch } = useTasksContext();
+    const { user } = useAuthContext();
+
+    if (!user) {
+        return;
+    }
     const handle_delete = async () => {
         const respone = await fetch(`/api/tasks/${task._id}`, {
             method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
         });
 
         const json = await respone.json();
@@ -18,6 +27,9 @@ function TaskDetail({ task }) {
     const handle_update = async () => {
         const respone = await fetch(`/api/tasks/${task._id}`, {
             method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
         });
 
         const json = await respone.json();

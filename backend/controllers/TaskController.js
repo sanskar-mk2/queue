@@ -2,7 +2,8 @@ const Task = require("../models/Task");
 const mongoose = require("mongoose");
 
 const index = async (req, res) => {
-    const tasks = await Task.find({}).sort({ updated_at: 1 });
+    const user_id = req.user._id;
+    const tasks = await Task.find({ user_id }).sort({ updated_at: 1 });
     return res.status(200).json({ tasks });
 };
 
@@ -12,7 +13,8 @@ const store = async (req, res) => {
         return res.status(400).json({ error: "missing title" });
     }
     try {
-        const task = await Task.create({ title });
+        const user_id = req.user._id;
+        const task = await Task.create({ title, user_id });
         return res.status(201).json(task);
     } catch (error) {
         return res.status(400).json({ error: error.message });

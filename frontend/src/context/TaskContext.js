@@ -32,6 +32,8 @@ export const tasks_reducer = (state, action) => {
                     e._id === action.payload._id ? action.payload : e
                 )
             );
+        case TaskConstants.CLEAN_TASKS:
+            return local_copy_manager([]);
         default:
             throw new Error(`Unhandled type ${action.type} in tasks_reducer`);
     }
@@ -39,7 +41,7 @@ export const tasks_reducer = (state, action) => {
 
 export const TasksContextProvider = ({ children }) => {
     const [state, dispatch] = useReducer(tasks_reducer, {
-        tasks: null,
+        tasks: [],
         abstract: 0,
         first: null,
         second: null,
