@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useSignup } from "../hooks/useSignup";
 
 function Signup() {
     const [email, set_email] = useState("");
     const [password, set_password] = useState("");
+    const { signup, error, is_loading } = useSignup();
 
     const handle_submit = async (e) => {
         e.preventDefault();
-        console.log(email, password);
+        await signup(email, password);
     };
     return (
         <div className="flex justify-center mt-8 w-full text-space_cadet rounded">
@@ -31,6 +33,15 @@ function Signup() {
                             value={password}
                         />
                     </div>
+                    <div className="mt-8 flex flex-col">
+                        <input
+                            disabled={is_loading}
+                            className="bg-space_cadet disabled:cursor-not-allowed hover:cursor-pointer text-white p-4 rounded text-2xl"
+                            type="submit"
+                            value="Sign up"
+                        />
+                    </div>
+                    {error && <p className="text-red-500">{error}</p>}
                 </form>
             </div>
         </div>
