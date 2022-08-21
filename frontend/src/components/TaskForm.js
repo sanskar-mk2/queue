@@ -44,7 +44,7 @@ function TaskForm() {
 
     return (
         <form onSubmit={handle_submit}>
-            <div className="sm:flex-col flex gap-2 mb-4">
+            <div className="sm:flex-row flex flex-col gap-2 mb-4">
                 <input
                     onChange={(e) => set_title(e.target.value)}
                     value={title}
