@@ -10,12 +10,12 @@ function Navbar() {
     };
     return (
         <header className="bg-white w-full p-8 flex justify-center">
-            <div className="flex container justify-between">
+            <div className="flex px-4 items-center container justify-between">
                 <Link to="/">
                     <h1 className="text-3xl font-bold">TDQ</h1>
                 </Link>
-                <nav>
-                    <div className="flex gap-4">
+                <nav className="flex items-center">
+                    <div className="flex gap-4 sm:flex-row flex-col items-end">
                         {user ? (
                             <>
                                 <div>{user.email}</div>

@@ -30,8 +30,8 @@ function Home() {
     }, [dispatch, user]);
 
     return (
-        <div className="flex justify-center mt-8 w-full bg-space_cadet  rounded">
-            <div className="p-8 flex flex-col gap-4">
+        <div className="flex justify-center w-full min-h-full bg-space_cadet  rounded">
+            <div className="p-8 w-full lg:w-1/2 flex flex-col gap-4">
                 <TaskForm />
                 <div className="flex flex-col bg-cream text-space_cadet p-4 rounded">
                     <span className="text-2xl">

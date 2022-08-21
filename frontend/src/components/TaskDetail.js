@@ -1,7 +1,9 @@
-import moment from "moment";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { TaskConstants } from "../constants/TaskConstants";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useTasksContext } from "../hooks/useTasksContext";
+dayjs.extend(relativeTime)
 function TaskDetail({ task }) {
     const { dispatch } = useTasksContext();
     const { user } = useAuthContext();
@@ -58,8 +60,8 @@ function TaskDetail({ task }) {
                 </span>
             </div>
             <span className="text-end mt-2 text-sm text-space_cadet opacity-50">
-                {
-                    moment(task.updated_at).fromNow() //.format("MMMM Do YYYY, h:mm:ss a")
+                added {
+                    dayjs(task.created_at).fromNow() //.format("MMMM Do YYYY, h:mm:ss a")
                 }
             </span>
         </div>

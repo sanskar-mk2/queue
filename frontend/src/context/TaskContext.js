@@ -1,13 +1,13 @@
 import { createContext, useReducer } from "react";
 import { TaskConstants } from "../constants/TaskConstants";
-import moment from "moment";
+import dayjs from "dayjs";
 
 export const TasksContext = createContext();
 
 const local_copy_manager = (tasks) => {
     tasks = [
         ...tasks.sort(
-            (a, b) => moment(a.updated_at).unix() - moment(b.updated_at).unix()
+            (a, b) => dayjs(a.updated_at).unix() - dayjs(b.updated_at).unix()
         ),
     ];
     const first = tasks.slice(0, 1)[0];

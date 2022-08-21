@@ -8,10 +8,10 @@ import Signup from "./pages/Signup";
 function App() {
     const { user } = useAuthContext();
     return (
-        <div className="w-full flex flex-col items-center">
+        <div className="w-full min-h-screen h-full flex flex-col items-center">
             <BrowserRouter>
                 <Navbar />
-                <div className="pages w-full container">
+                <div className="p-4 w-full h-full container">
                     <Routes>
                         <Route
                             path="/"

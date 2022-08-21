@@ -44,14 +44,24 @@ function TaskForm() {
 
     return (
         <form onSubmit={handle_submit}>
-            <input
-                onChange={(e) => set_title(e.target.value)}
-                value={title}
-                placeholder="Enter a new task"
-                className={`${
-                    error === "missing title" ? "border-red-500 border-2" : ""
-                } rounded bg-cream text-space_cadet p-4 text-2xl w-full`}
-            />
+            <div className="sm:flex-col flex gap-2 mb-4">
+                <input
+                    onChange={(e) => set_title(e.target.value)}
+                    value={title}
+                    placeholder="Enter a new task"
+                    className={`${
+                        error === "missing title"
+                            ? "border-red-500 border-2"
+                            : ""
+                    } rounded bg-cream text-space_cadet p-4 text-2xl w-full`}
+                />
+                <input
+                    type="submit"
+                    className="text-cream p-4 text-2xl hover:cursor-pointer text-center grow bg-blue-300 rounded"
+                    value="Add"
+                />
+            </div>
+
             {error && (
                 <p
                     className={`text-space_cadet mt-2 mb-4 bg-red-300 p-2 rounded border-red-500 border-2`}
