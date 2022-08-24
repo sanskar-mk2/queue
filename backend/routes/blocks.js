@@ -3,10 +3,9 @@ const {
     store,
     index,
     show,
-    _delete,
-    update,
     destroy,
-} = require("../controllers/TaskController");
+    update,
+} = require("../controllers/BlockController");
 const RequireAuth = require("../middleware/RequireAuth");
 
 const router = express.Router();
@@ -19,7 +18,6 @@ router.post("/", store);
 router.get("/:id", show);
 router.patch("/:id", update);
 
-router.delete("/:id", _delete);
-router.delete("/destroy/:id", destroy);
+router.delete("/:id", destroy);
 
 module.exports = router;

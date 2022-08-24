@@ -6,6 +6,7 @@ const app = express();
 
 const task_routes = require("./routes/tasks");
 const user_routes = require("./routes/users");
+const block_routes = require("./routes/blocks");
 
 app.use(express.json());
 
@@ -16,6 +17,7 @@ app.use((req, res, next) => {
 
 app.use("/api/tasks", task_routes);
 app.use("/api/users", user_routes);
+app.use("/api/blocks", block_routes);
 
 mongoose
     .connect(process.env.MONGO_URI)
