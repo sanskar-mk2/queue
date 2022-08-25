@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import { BlocksContextProvider } from "./context/BlockContext";
 import { useAuthContext } from "./hooks/useAuthContext";
 import BlocksHome from "./pages/BlocksHome";
 import Home from "./pages/Home";
@@ -23,12 +24,20 @@ function App() {
                             path="/"
                             element={user ? <Home /> : <Navigate to="/login" />}
                         />
+
                         <Route
                             path="/blocks"
                             element={
-                                user ? <BlocksHome /> : <Navigate to="/login" />
+                                user ? (
+                                    <BlocksContextProvider>
+                                        <BlocksHome />
+                                    </BlocksContextProvider>
+                                ) : (
+                                    <Navigate to="/login" />
+                                )
                             }
                         />
+
                         <Route
                             path="/login"
                             element={!user ? <Login /> : <Navigate to="/" />}
