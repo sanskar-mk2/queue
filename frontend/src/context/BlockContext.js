@@ -15,6 +15,7 @@ export const blocks_reducer = (state, action) => {
                 state.time_slots[idx] = {
                     ...state.time_slots[idx],
                     title: block.title,
+                    _id: block._id,
                 };
             });
             return { ...state };

@@ -116,12 +116,43 @@ function BlocksHome() {
         return response.ok;
     };
 
+    const handle_delete = async (_id) => {
+        if (!user) {
+            console.error("You must be logged in");
+            return;
+        }
+
+        const response = await fetch(`/api/blocks/${_id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
+        });
+
+        const json = await response.json();
+
+        if (!response.ok) {
+            console.error(json.error);
+        }
+
+        if (response.ok) {
+            console.log(json);
+            // dispatch({ type: TaskConstants.CREATE_TASK, payload: json });
+        }
+        return response.ok;
+    };
+
     const focus_lost = async (obj) => {
         if (obj.title !== ref.current[obj.idx].value) {
-            const resp = await handle_upsert(
-                ref.current[obj.idx].value,
-                obj.date
-            );
+            let resp;
+            if (ref.current[obj.idx].value === "") {
+                resp = await handle_delete(obj._id);
+            } else {
+                resp = await handle_upsert(
+                    ref.current[obj.idx].value,
+                    obj.date
+                );
+            }
             if (!resp) {
                 ref.current[obj.idx].value = obj.title;
             }
