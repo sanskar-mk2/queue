@@ -5,6 +5,7 @@ const {
     show,
     destroy,
     update,
+    upsert,
 } = require("../controllers/BlockController");
 const RequireAuth = require("../middleware/RequireAuth");
 
@@ -17,6 +18,7 @@ router.post("/", store);
 
 router.get("/:id", show);
 router.patch("/:id", update);
+router.put("/", upsert);
 
 router.delete("/:id", destroy);
 
