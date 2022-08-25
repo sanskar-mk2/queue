@@ -97,4 +97,34 @@ const update = async (req, res) => {
     return res.status(200).json(updated_block);
 };
 
-module.exports = { store, index, show, destroy, update };
+const upsert = async (req, res) => {
+    const { title, timestamp } = req.body;
+    const user_id = req.user._id;
+    if (!title || !timestamp) {
+        return res.status(400).json({ error: "missing title or timestamp" });
+    }
+
+    if (!validator.isISO8601(timestamp)) {
+        return res
+            .status(400)
+            .json({ error: "please enter a valid timestamp" });
+    }
+
+    const block = await Block.findOne({ user_id, timestamp });
+    if (!block) {
+        try {
+            const block = await Block.create({ title, user_id, timestamp });
+            return res.status(201).json(block);
+        } catch (error) {
+            return res.status(400).json({ error: error.message });
+        }
+    }
+
+    if (block) {
+        await block.updateOne({ title });
+        const updated_block = await Block.findById(block._id);
+        return res.status(200).json(updated_block);
+    }
+};
+
+module.exports = { store, index, show, destroy, update, upsert };
