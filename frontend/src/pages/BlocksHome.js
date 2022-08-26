@@ -55,7 +55,7 @@ function BlocksHome() {
             const json = await respone.json();
             if (respone.ok) {
                 dispatch({
-                    type: BlockConstants.SET_BLOCKS,
+                    type: BlockConstants.CREATE_BLOCK,
                     payload: json,
                 });
             }
@@ -111,12 +111,19 @@ function BlocksHome() {
 
         if (response.ok) {
             console.log(json);
-            // dispatch({ type: TaskConstants.CREATE_TASK, payload: json });
+            dispatch({
+                type: BlockConstants.UPDATE_BLOCK,
+                payload: {
+                    _id: json._id,
+                    title: json.title,
+                    date: json.timestamp,
+                },
+            });
         }
         return response.ok;
     };
 
-    const handle_delete = async (_id) => {
+    const handle_delete = async (_id, timestamp) => {
         if (!user) {
             console.error("You must be logged in");
             return;
@@ -137,7 +144,12 @@ function BlocksHome() {
 
         if (response.ok) {
             console.log(json);
-            // dispatch({ type: TaskConstants.CREATE_TASK, payload: json });
+            dispatch({
+                type: BlockConstants.DELETE_BLOCK,
+                payload: {
+                    date: timestamp,
+                },
+            });
         }
         return response.ok;
     };
@@ -146,7 +158,7 @@ function BlocksHome() {
         if (obj.title !== ref.current[obj.idx].value) {
             let resp;
             if (ref.current[obj.idx].value === "") {
-                resp = await handle_delete(obj._id);
+                resp = await handle_delete(obj._id, obj.date);
             } else {
                 resp = await handle_upsert(
                     ref.current[obj.idx].value,
@@ -156,23 +168,22 @@ function BlocksHome() {
             if (!resp) {
                 ref.current[obj.idx].value = obj.title;
             }
+        } else {
+            const blocks = time_slots.map((e) => {
+                if (
+                    dayjs(obj.date).utc().unix() === dayjs(e.date).utc()?.unix()
+                ) {
+                    return {
+                        ...e,
+                        input: false,
+                    };
+                } else {
+                    return e;
+                }
+            });
+            dispatch({ type: BlockConstants.SET_BLOCKS, payload: blocks });
         }
 
-        const blocks = time_slots.map((e) => {
-            if (dayjs(obj.date).utc().unix() === dayjs(e.date).utc()?.unix()) {
-                return {
-                    ...e,
-                    input: false,
-                    title: ref.current[obj.idx].value,
-                };
-            } else {
-                return e;
-            }
-        });
-        dispatch({
-            type: BlockConstants.UPDATE_BLOCK,
-            payload: blocks,
-        });
         const hints = [...new Set(ref.current.map((e) => e?.value))];
         const clean_hints = hints.filter((e) => e);
         set_hints([...clean_hints]);
