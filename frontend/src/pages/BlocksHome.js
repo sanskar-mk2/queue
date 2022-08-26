@@ -155,6 +155,7 @@ function BlocksHome() {
     };
 
     const focus_lost = async (obj) => {
+        console.log(obj.title, ref.current[obj.idx].value)
         if (obj.title !== ref.current[obj.idx].value) {
             let resp;
             if (ref.current[obj.idx].value === "") {

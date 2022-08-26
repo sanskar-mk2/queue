@@ -7,6 +7,7 @@ export const BlocksContext = createContext();
 export const blocks_reducer = (state, action) => {
     switch (action.type) {
         case BlockConstants.CREATE_BLOCK:
+            console.log(action)
             const blocks = action.payload.blocks;
             blocks.forEach((block) => {
                 const idx = state.time_slots.findIndex(
@@ -34,7 +35,7 @@ export const blocks_reducer = (state, action) => {
                             ...e,
                             _id: action.payload._id,
                             input: false,
-                            title: action.payload.value,
+                            title: action.payload.title,
                         };
                     } else {
                         return e;
