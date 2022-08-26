@@ -10,6 +10,8 @@ export const auth_reducer = (state, action) => {
                 expires: action.payload.timeout,
             };
         case AuthConstants.LOGOUT:
+            localStorage.removeItem("user");
+            localStorage.removeItem("expires");
             return { user: null, expires: null };
         default:
             throw new Error(`Unhandled type ${action.type} in auth_reducer`);
