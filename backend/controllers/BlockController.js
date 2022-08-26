@@ -49,7 +49,7 @@ const destroy = async (req, res) => {
     const { id } = req.params;
     const user_id = req.user._id;
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({ error: "No such block." });
+        return res.status(404).json({ error: "Not a valid id." });
     }
 
     const block = await Block.findOne({ _id: id });
@@ -74,27 +74,21 @@ const update = async (req, res) => {
         return res.status(404).json({ error: "No such block." });
     }
 
-    const block = await Block.findOne({ _id: id });
-    if (!block) {
-        return res.status(404).json({ error: "No such block." });
-    }
-
-    const user_id = req.user._id;
-
     const { title } = req.body;
     if (!title) {
         return res.status(400).json({ error: "missing title" });
     }
 
-    if (!user_id.equals(block.user_id)) {
-        return res
-            .status(401)
-            .json({ error: "This block does not belong to this user" });
+    const block = await Block.findOneAndUpdate(
+        { _id: id },
+        { title },
+        { new: true }
+    );
+    if (!block) {
+        return res.status(404).json({ error: "No such block." });
     }
 
-    await block.updateOne({ title });
-    const updated_block = await Block.findById(id);
-    return res.status(200).json(updated_block);
+    return res.status(200).json(block);
 };
 
 const upsert = async (req, res) => {
@@ -110,20 +104,15 @@ const upsert = async (req, res) => {
             .json({ error: "please enter a valid timestamp" });
     }
 
-    const block = await Block.findOne({ user_id, timestamp });
-    if (!block) {
-        try {
-            const block = await Block.create({ title, user_id, timestamp });
-            return res.status(201).json(block);
-        } catch (error) {
-            return res.status(400).json({ error: error.message });
-        }
-    }
-
-    if (block) {
-        await block.updateOne({ title });
-        const updated_block = await Block.findById(block._id);
-        return res.status(200).json(updated_block);
+    try {
+        const block = await Block.findOneAndUpdate(
+            { user_id, timestamp },
+            { timestamp, title, user_id },
+            { upsert: true, new: true }
+        );
+        return res.status(200).json(block);
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
     }
 };
 
