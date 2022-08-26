@@ -250,8 +250,7 @@ function BlocksHome() {
                                                 ]?.value
                                                     ? uniqolor(
                                                           ref.current[f.idx]
-                                                              .value,
-                                                          { lightness: 75 }
+                                                              .value
                                                       ).color
                                                     : "",
                                                 borderStyle: ref.current[f.idx]
