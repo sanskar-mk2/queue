@@ -5,9 +5,8 @@ import { useTasksContext } from "./useTasksContext";
 
 export const useLogout = () => {
     const { dispatch } = useAuthContext();
-    const { dispatch: dispatch_tasks} = useTasksContext();
+    const { dispatch: dispatch_tasks } = useTasksContext();
     const logout = () => {
-        localStorage.removeItem("user");
         dispatch({ type: AuthConstants.LOGOUT });
         dispatch_tasks({ type: TaskConstants.CLEAN_TASKS });
     };

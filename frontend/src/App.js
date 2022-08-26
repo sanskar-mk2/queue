@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import { useAuthContext } from "./hooks/useAuthContext";
@@ -7,6 +8,10 @@ import Signup from "./pages/Signup";
 
 function App() {
     const { user } = useAuthContext();
+    useEffect(() => {
+        // setTimeout(logout, expires - new Date().getTime());
+    }, []);
+
     return (
         <div className="w-full min-h-screen h-full flex flex-col items-center">
             <BrowserRouter>

@@ -3,11 +3,13 @@ import TaskDetail from "../components/TaskDetail";
 import TaskForm from "../components/TaskForm";
 import { TaskConstants } from "../constants/TaskConstants";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
 import { useTasksContext } from "../hooks/useTasksContext";
 
 function Home() {
     const { first, second, abstract, dispatch } = useTasksContext();
     const { user } = useAuthContext();
+    const { logout } = useLogout();
 
     useEffect(() => {
         const fetch_tasks = async () => {
@@ -23,11 +25,14 @@ function Home() {
                     payload: json.tasks.filter((e) => !e.deleted_at),
                 });
             }
+            if (respone.status === 401) {
+                logout();
+            }
         };
         if (user) {
             fetch_tasks();
         }
-    }, [dispatch, user]);
+    }, [dispatch, user, logout]);
 
     return (
         <div className="flex justify-center w-full min-h-full bg-space_cadet  rounded">

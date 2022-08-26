@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TaskConstants } from "../constants/TaskConstants";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
 import { useTasksContext } from "../hooks/useTasksContext";
 
 function TaskForm() {
@@ -8,6 +9,7 @@ function TaskForm() {
     const [title, set_title] = useState("");
     const [error, set_error] = useState(null);
     const { user } = useAuthContext();
+    const { logout } = useLogout();
 
     const handle_submit = async (e) => {
         e.preventDefault();
@@ -31,7 +33,11 @@ function TaskForm() {
         const json = await response.json();
 
         if (!response.ok) {
-            set_error(json.error);
+            if (response.status === 401) {
+                logout();
+            } else {
+                set_error(json.error);
+            }
         }
 
         if (response.ok) {

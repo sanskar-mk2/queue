@@ -2,12 +2,13 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { TaskConstants } from "../constants/TaskConstants";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
 import { useTasksContext } from "../hooks/useTasksContext";
-dayjs.extend(relativeTime)
+dayjs.extend(relativeTime);
 function TaskDetail({ task }) {
     const { dispatch } = useTasksContext();
     const { user } = useAuthContext();
-
+    const { logout } = useLogout();
     if (!user) {
         return;
     }
@@ -25,6 +26,10 @@ function TaskDetail({ task }) {
             console.log("task deleted");
             dispatch({ type: TaskConstants.DELETE_TASK, payload: json });
         }
+
+        if (respone.status === 401) {
+            logout();
+        }
     };
     const handle_update = async () => {
         const respone = await fetch(`/api/tasks/${task._id}`, {
@@ -39,6 +44,10 @@ function TaskDetail({ task }) {
         if (respone.ok) {
             console.log("task updated");
             dispatch({ type: TaskConstants.UPDATE_TASK, payload: json });
+        }
+
+        if (respone.status === 401) {
+            logout();
         }
     };
     return (
@@ -60,7 +69,8 @@ function TaskDetail({ task }) {
                 </span>
             </div>
             <span className="text-end mt-2 text-sm text-space_cadet opacity-50">
-                added {
+                added{" "}
+                {
                     dayjs(task.created_at).fromNow() //.format("MMMM Do YYYY, h:mm:ss a")
                 }
             </span>

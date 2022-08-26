@@ -27,8 +27,10 @@ export const useLogin = () => {
         }
 
         if (resp.ok) {
+            const timeout = new Date().getTime() + 1000 * json.expires_in;
             localStorage.setItem("user", JSON.stringify(json));
-            dispatch({ type: AuthConstants.LOGIN, payload: json });
+            localStorage.setItem("expires", timeout);
+            dispatch({ type: AuthConstants.LOGIN, payload: { json, timeout } });
             set_is_loading(false);
         }
     };

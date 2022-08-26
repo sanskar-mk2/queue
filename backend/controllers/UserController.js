@@ -1,8 +1,9 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const expires_in = parseInt(process.env.EXPIRES_IN); // global
 
 const create_token = (_id) => {
-    return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+    return jwt.sign({ _id }, process.env.SECRET, { expiresIn: expires_in });
 };
 
 const login_user = async (req, res) => {
@@ -10,7 +11,7 @@ const login_user = async (req, res) => {
     try {
         const user = await User.login(email, password);
         const token = create_token(user._id);
-        return res.status(200).json({ email, token });
+        return res.status(200).json({ email, token, expires_in });
     } catch (error) {
         return res.status(400).json({ error: error.message });
     }
