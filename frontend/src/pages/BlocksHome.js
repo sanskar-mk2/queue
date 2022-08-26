@@ -155,7 +155,7 @@ function BlocksHome() {
     };
 
     const focus_lost = async (obj) => {
-        console.log(obj.title, ref.current[obj.idx].value)
+        console.log(obj.title, ref.current[obj.idx].value);
         if (obj.title !== ref.current[obj.idx].value) {
             let resp;
             if (ref.current[obj.idx].value === "") {
@@ -202,7 +202,7 @@ function BlocksHome() {
     };
 
     const key_down = (e) => {
-        if (e.key === "Enter") {
+        if (e.key === "Enter" || e.key === "Escape") {
             e.target.blur();
         }
     };
