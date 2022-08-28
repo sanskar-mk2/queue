@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import { useEffect, useRef, useState } from "react";
+import { ResponsiveContainer } from "recharts";
 import uniqolor from "uniqolor";
+import LineGraph from "../components/LineGraph";
 import PieGraph from "../components/PieGraph";
 import { BlockConstants } from "../constants/BlockConstants";
 import { useAuthContext } from "../hooks/useAuthContext";
@@ -17,6 +19,7 @@ function BlocksHome() {
     // const [time_slots, set_time_slots] = useState([]);
     const [hints, set_hints] = useState([]);
     const [pie_data, set_pie_data] = useState([]);
+    const [line_data, set_line_data] = useState([]);
     const ref = useRef([]);
 
     useEffect(() => {
@@ -189,6 +192,7 @@ function BlocksHome() {
         const clean_hints = hints.filter((e) => e);
         set_hints([...clean_hints]);
         const data = [];
+        const daily_data = [];
         clean_hints.forEach((e) => {
             data.push({ name: e, value: 0 });
         });
@@ -198,7 +202,28 @@ function BlocksHome() {
                 data[idx].value += 1;
             }
         });
+        days.forEach((e) => {
+            daily_data.push({
+                date: e,
+                ...clean_hints.reduce(
+                    (acc, curr) => ((acc[curr] = 0), acc),
+                    {}
+                ),
+            });
+        });
+        const exists = [];
+        time_slots.forEach((e) => {
+            if (e.title) {
+                const idx = dayjs(e.date).utc().date() - 1; // date starts at 1
+                console.log(e.title);
+                daily_data[idx][e.title] += 1;
+                exists.push(dayjs(e.date).utc().date());
+            }
+        });
+        const unique_exists = [...new Set(exists)];
         set_pie_data([...data]);
+        set_line_data(daily_data.filter((e) => unique_exists.includes(e.date)));
+        console.log(daily_data);
     };
 
     const key_down = (e) => {
@@ -214,78 +239,94 @@ function BlocksHome() {
     };
 
     return (
-        <div className="flex">
-            <datalist id="hints">
-                {hints.map((e, i) => (
-                    <option key={i} value={e} />
-                ))}
-            </datalist>
-            <div className="grow">
-                <table onMouseLeave={() => lights_out()}>
-                    <thead>
-                        <tr>
-                            <td></td>
-                            {days.map((e) => (
-                                <th key={e}>{e}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {hours.map((h) => (
-                            <tr key={h}>
-                                <td className="font-bold">{h}</td>
-                                {time_slots
-                                    .filter(
-                                        (e) => dayjs(e.date).utc().hour() === h
-                                    )
-                                    .map((f) => (
-                                        <td
-                                            onMouseEnter={() => light_up(f)}
-                                            onClick={() => input_box(f)}
-                                            title={dayjs(f.date)
-                                                .utc()
-                                                .toString()}
-                                            style={{
-                                                backgroundColor: ref.current[
-                                                    f.idx
-                                                ]?.value
-                                                    ? uniqolor(
-                                                          ref.current[f.idx]
-                                                              .value
-                                                      ).color
-                                                    : "",
-                                                borderStyle: ref.current[f.idx]
-                                                    ?.value
-                                                    ? "solid"
-                                                    : "",
-                                            }}
-                                            className={`${
-                                                f.lit ? "bg-green-300" : ""
-                                            } w-8 h-8 relative border-dashed rounded-md border-2 border-pink-800`}
-                                            key={dayjs(f.date).utc().unix()}
-                                        >
-                                            <input
-                                                list="hints"
-                                                onBlur={() => focus_lost(f)}
-                                                className={`${
-                                                    f.input
-                                                        ? "p-2 bottom-8 left-8"
-                                                        : "top-0 left-0 w-0 opacity-0"
-                                                } absolute rounded-bl-none rounded-tr-full rounded-tl-full rounded-br-full h-8`}
-                                                ref={(e) =>
-                                                    (ref.current[f.idx] = e)
-                                                }
-                                                defaultValue={f.title}
-                                                onKeyDown={(e) => key_down(e)}
-                                            />
-                                        </td>
-                                    ))}
+        <div className="flex flex-col items-center">
+            <div className="flex">
+                <datalist id="hints">
+                    {hints.map((e, i) => (
+                        <option key={i} value={e} />
+                    ))}
+                </datalist>
+                <div className="grow">
+                    <table onMouseLeave={() => lights_out()}>
+                        <thead>
+                            <tr>
+                                <td></td>
+                                {days.map((e) => (
+                                    <th key={e}>{e}</th>
+                                ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {hours.map((h) => (
+                                <tr key={h}>
+                                    <td className="font-bold">{h}</td>
+                                    {time_slots
+                                        .filter(
+                                            (e) =>
+                                                dayjs(e.date).utc().hour() === h
+                                        )
+                                        .map((f) => (
+                                            <td
+                                                onMouseEnter={() => light_up(f)}
+                                                onClick={() => input_box(f)}
+                                                title={dayjs(f.date)
+                                                    .utc()
+                                                    .toString()}
+                                                style={{
+                                                    backgroundColor: ref
+                                                        .current[f.idx]?.value
+                                                        ? uniqolor(
+                                                              ref.current[f.idx]
+                                                                  .value
+                                                          ).color
+                                                        : "",
+                                                    borderStyle: ref.current[
+                                                        f.idx
+                                                    ]?.value
+                                                        ? "solid"
+                                                        : "",
+                                                }}
+                                                className={`${
+                                                    f.lit ? "bg-green-300" : ""
+                                                } w-8 h-8 relative border-dashed rounded-md border-2 border-pink-800`}
+                                                key={dayjs(f.date).utc().unix()}
+                                            >
+                                                <input
+                                                    list="hints"
+                                                    onBlur={() => focus_lost(f)}
+                                                    className={`${
+                                                        f.input
+                                                            ? "p-2 bottom-8 left-8"
+                                                            : "top-0 left-0 w-0 opacity-0"
+                                                    } absolute rounded-bl-none rounded-tr-full rounded-tl-full rounded-br-full h-8`}
+                                                    ref={(e) =>
+                                                        (ref.current[f.idx] = e)
+                                                    }
+                                                    defaultValue={f.title}
+                                                    onKeyDown={(e) =>
+                                                        key_down(e)
+                                                    }
+                                                />
+                                            </td>
+                                        ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+                <div className="flex flex-col">
+                    <PieGraph data={pie_data} />
+                </div>
             </div>
-            <PieGraph data={pie_data} />
+            <div>
+                {line_data.length ? (
+                    <ResponsiveContainer className="mb-96 w-full">
+                        <LineGraph line_data={line_data} />
+                    </ResponsiveContainer>
+                ) : (
+                    ""
+                )}
+            </div>
         </div>
     );
 }
